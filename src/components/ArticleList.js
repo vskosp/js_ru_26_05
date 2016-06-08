@@ -4,13 +4,17 @@ import Article from './Article'
 import Chart from './Chart'
 import oneOpen from '../decorators/oneOpen'
 import Select from 'react-select'
+import {DateRangePicker} from './DateRangePicker';
+import {DateRangeCaption} from './DateRangeCaption';
 
 import 'react-select/dist/react-select.css'
 
 class ArticleList extends Component {
 
     state = {
-        selected: null
+        selected: null,
+        from: null,
+        to: null
     }
 
     componentDidMount() {
@@ -20,6 +24,7 @@ class ArticleList extends Component {
 
     render() {
         const { articles, isOpen, openItem } = this.props
+        const { from, to } = this.state;
 
         const articleItems = articles.map((article) => <li key={article.id}>
             <Article article = {article}
@@ -35,6 +40,17 @@ class ArticleList extends Component {
 
         return (
             <div>
+                <DateRangePicker 
+                  from={from}
+                  to={to}
+                  onRangeSelect={this.onRangeSelect}
+                />
+
+                <DateRangeCaption
+                  from={from}
+                  to={to}
+                />
+
                 <ul>
                     {articleItems}
                 </ul>
@@ -54,6 +70,10 @@ class ArticleList extends Component {
             selected
         })
     }
+
+    onRangeSelect = (range) => {
+        this.setState(range);
+    };
 }
 
 ArticleList.propTypes = {
