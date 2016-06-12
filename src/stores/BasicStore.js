@@ -35,6 +35,12 @@ export default class BasicStore extends EventEmitter {
         delete this._items[id]
     }
 
+    _addReferenceToItem(itemId, referenceName, referenceValue) {
+        const item = this.getById(itemId);
+        item[referenceName] = item[referenceName] || [];
+        item[referenceName].push(referenceValue);
+    }
+
     _emitChange = () => {
         this.emit(SOME_CHANGE_EVENT)
     }

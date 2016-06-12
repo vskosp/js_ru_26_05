@@ -11,13 +11,15 @@ class CommentList extends Component {
         comments: PropTypes.array,
         //from toggleOpen decorator
         isOpen: PropTypes.bool,
-        toggleOpen: PropTypes.func
+        toggleOpen: PropTypes.func,
+        onAddComment: PropTypes.func
     };
     render() {
         return (
             <div>
                 {this.getToggler()}
                 {this.getList()}
+                {this.getInput()}
             </div>
         )
     }
@@ -43,6 +45,34 @@ class CommentList extends Component {
         if (!comments || !comments.length) return <h3>No comments yet</h3>
         const items = comments.map(comment => <li key = {comment.id}><Comment comment = {comment} /></li>)
         return <ul>{items}</ul>
+    }
+
+    getInput() {
+        const { isOpen } = this.props;
+
+        if (!isOpen) {
+            return null;
+        }
+
+        return (
+          <form onSubmit={this.addComment}>
+              <textarea
+                placeholder="Add a comment"
+                ref="commentTextArea"
+                style={{width:'300px'}}
+              />
+              <br/>
+              <button type="submit">Add Comment</button>
+          </form>
+        );
+    }
+
+    addComment = (ev) => {
+        const {onAddComment} = this.props;
+        const {commentTextArea} = this.refs;
+        
+        onAddComment(ev, commentTextArea.value);
+        commentTextArea.value = '';
     }
 }
 
