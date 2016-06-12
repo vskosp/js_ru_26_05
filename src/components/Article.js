@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import CommentList from './CommentList'
-import { deleteArticle } from '../AC/articles'
+import { deleteArticle, addCommentToArticle } from '../AC/articles'
 
 class Article extends Component {
 
@@ -31,7 +31,10 @@ class Article extends Component {
         return (
             <section>
                 {article.text}
-                <CommentList comments = {article.getRelation('comments')} />
+                <CommentList
+                  comments = {article.getRelation('comments')}
+                  onAddComment = {this.handleAddComment(article.id)}
+                />
             </section>
         )
     }
@@ -40,6 +43,12 @@ class Article extends Component {
         ev.preventDefault()
         ev.stopPropagation()
         deleteArticle(this.props.article.id)
+    }
+
+    handleAddComment = (articleId) => (ev, text) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        addCommentToArticle(text, articleId);
     }
 }
 
