@@ -1,9 +1,11 @@
 import React, { PropTypes, Component } from 'react'
+import CommentList from './CommentList';
 
 class Article extends Component {
 
     state = {
-        isOpen: false
+        isOpen: false,
+        isCommentsShown: false
     }
 
     render() {
@@ -12,11 +14,13 @@ class Article extends Component {
 
         if (!article) return <h3>No article</h3>
         const body = isOpen ? <section>{article.text}</section> : null
+        const comments = isOpen ? this.renderComments() : null;
 
         return (
             <div>
                 <h3 onClick = {this.toggleOpen}>{article.title}</h3>
                 {body}
+                {comments}
             </div>
         )
     }
@@ -25,6 +29,33 @@ class Article extends Component {
         this.setState({
             isOpen: !this.state.isOpen
         })
+    }
+
+    toggleComments = () => {
+        this.setState({
+            isCommentsShown: !this.state.isCommentsShown
+        });
+    };
+
+    renderComments() {
+        const { comments } = this.props.article;
+
+        if (!comments) {
+            return null;
+        }
+
+        const { isCommentsShown } = this.state;
+
+        return (
+          <div>
+              <button onClick={ this.toggleComments }>
+                  { isCommentsShown ? 'Hide comments' : 'Show comments' }
+              </button>
+              <div>
+                  { isCommentsShown ? <CommentList comments={ comments } /> : null }
+              </div>
+          </div>
+        );
     }
 }
 
@@ -47,7 +78,14 @@ Article.propTypes = {
     article: PropTypes.shape({
         title: PropTypes.string.isRequired,
         text: PropTypes.string,
-        id: PropTypes.string.isRequired
+        id: PropTypes.string.isRequired,
+        comments: PropTypes.arrayOf(
+          PropTypes.shape({
+              id: PropTypes.number,
+              name: PropTypes.string,
+              text: PropTypes.string
+          })
+        )
     }),
     options: PropTypes.object
 }
